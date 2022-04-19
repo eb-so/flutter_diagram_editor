@@ -1,7 +1,8 @@
 import 'dart:math' as math;
 
-import 'package:diagram_editor/src/utils/vector_utils.dart';
 import 'package:flutter/material.dart';
+
+import 'package:diagram_editor/src/utils/vector_utils.dart';
 
 enum ArrowType {
   none,
@@ -45,6 +46,9 @@ class LinkStyle {
   /// Defines the color of the link's line and both arrowheads.
   Color color;
 
+  /// Defines the color of the inner circle
+  Color innerColor;
+
   /// Defines a visual design of a link on the canvas.
   LinkStyle({
     this.lineType = LineType.solid,
@@ -54,6 +58,7 @@ class LinkStyle {
     this.backArrowSize = 5,
     this.lineWidth = 1,
     this.color = Colors.black,
+    this.innerColor = Colors.white,
   })  : assert(lineWidth > 0),
         assert(arrowSize > 0);
 
@@ -229,7 +234,12 @@ class LinkStyle {
         arrowSize = json['arrow_size'],
         backArrowSize = json['back_arrow_size'],
         lineWidth = json['line_width'],
-        color = Color(int.parse(json['color'], radix: 16));
+        color = Color(
+          int.parse(json['color'], radix: 16),
+        ),
+        innerColor = Color(
+          int.parse(json['innerColor'], radix: 16),
+        );
 
   Map<String, dynamic> toJson() => {
         'line_type': lineType.index,
@@ -239,5 +249,6 @@ class LinkStyle {
         'back_arrow_size': backArrowSize,
         'line_width': lineWidth,
         'color': color.toString().split('(0x')[1].split(')')[0],
+        'innerColor': innerColor.toString().split('(0x')[1].split(')')[0],
       };
 }

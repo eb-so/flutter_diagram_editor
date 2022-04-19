@@ -19,6 +19,10 @@ class LinkPainter extends CustomPainter {
       ..color = linkStyle.color
       ..strokeWidth = linkStyle.lineWidth * scale
       ..style = PaintingStyle.stroke;
+    var innerPaint = Paint()
+      ..color = linkStyle.innerColor
+      ..strokeWidth = linkStyle.lineWidth * scale / 3
+      ..style = PaintingStyle.stroke;
 
     for (int i = 0; i < linkPoints.length - 1; i++) {
       if (linkPoints.length == 2) {
@@ -71,7 +75,27 @@ class LinkPainter extends CustomPainter {
       }
     }
 
-    paint..style = PaintingStyle.fill;
+    innerPaint..style = PaintingStyle.fill;
+    canvas.drawPath(
+        linkStyle.getArrowTipPath(
+          linkStyle.arrowType,
+          linkStyle.arrowSize,
+          linkPoints[linkPoints.length - 2],
+          linkPoints[linkPoints.length - 1],
+          scale,
+        ),
+        innerPaint);
+
+    canvas.drawPath(
+        linkStyle.getArrowTipPath(
+          linkStyle.backArrowType,
+          linkStyle.backArrowSize,
+          linkPoints[1],
+          linkPoints[0],
+          scale,
+        ),
+        innerPaint);
+
     canvas.drawPath(
         linkStyle.getArrowTipPath(
           linkStyle.arrowType,
@@ -91,14 +115,6 @@ class LinkPainter extends CustomPainter {
           scale,
         ),
         paint);
-
-    // DEBUG:
-    // paint
-    //   ..color = Colors.green
-    //   ..style = PaintingStyle.stroke
-    //   ..strokeWidth = scale * 0.2;
-    // canvas.drawPath(
-    //     makeWiderLinePath(scale * (5 + linkStyle.lineWidth)), paint);
   }
 
   @override

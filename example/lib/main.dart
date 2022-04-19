@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:diagram_editor/diagram_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_diagram_editor_example/app_consts.dart';
+import 'package:flutter_diagram_editor_example/testsuite_rect.dart';
 
 void main() => runApp(const DiagramApp());
 
@@ -95,7 +97,6 @@ class MyPolicySet extends PolicySet
         CustomPolicy,
         //
         CanvasControlPolicy,
-        LinkControlPolicy,
         LinkJointControlPolicy,
         LinkAttachmentRectPolicy {}
 
@@ -112,18 +113,10 @@ mixin MyInitPolicy implements InitPolicy {
 mixin MyComponentDesignPolicy implements ComponentDesignPolicy {
   @override
   Widget showComponentBody(ComponentData componentData) {
-    return Container(
-      decoration: BoxDecoration(
-        color: (componentData.data as MyComponentData).color,
-        border: Border.all(
-          width: 2,
-          color: (componentData.data as MyComponentData).isHighlightVisible
-              ? Colors.pink
-              : Colors.black,
-        ),
-      ),
-      child: const Center(child: Text('component')),
-    );
+    return TestsuiteRect(
+        title: 'componentData' * 5,
+        isHighlight:
+            (componentData.data as MyComponentData).isHighlightVisible);
   }
 }
 
@@ -138,7 +131,7 @@ mixin MyCanvasPolicy implements CanvasPolicy, CustomPolicy {
     } else {
       canvasWriter.model.addComponent(
         ComponentData(
-          size: const Size(96, 72),
+          size: const Size(kTestsuiteRectWidth, kTestsuiteRectHeight),
           position:
               canvasReader.state.fromCanvasCoordinates(details.localPosition),
           data: MyComponentData(),
@@ -205,8 +198,10 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomPolicy {
       sourceComponentId: sourceComponentId,
       targetComponentId: targetComponentId,
       linkStyle: LinkStyle(
-        arrowType: ArrowType.pointedArrow,
-        lineWidth: 1.5,
+        arrowType: ArrowType.centerCircle,
+        lineWidth: 4,
+        innerColor: kcSecondaryGreen,
+        color: kcDisableTestGreyColor,
         backArrowType: ArrowType.centerCircle,
       ),
     );
@@ -242,6 +237,7 @@ mixin CustomPolicy implements PolicySet {
   // Save the diagram to String in json format.
   serialize() {
     serializedDiagram = canvasReader.model.serializeDiagram();
+    print(serializedDiagram);
   }
 
   // Load the diagram from json format. Do it cautiously, to prevent unstable state remove the previous diagram (id collision can happen).
